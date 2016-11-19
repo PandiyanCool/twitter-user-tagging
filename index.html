@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+  <head>
+    <title>Twitter tagging</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+  </head>
+
+  <body ng-app="twitter">
+
+    <!-- scripts -->
+    <script>
+      angular.module('twitter', ['ngMaterial'])
+        .controller('taggingController', ['$scope', function($scope) {
+          $scope.tweetlist = [];
+          $scope.message = '';
+          $scope.searchText = '';
+          $scope.multipleValue = [];
+          $scope.submit = function() {
+            if ($scope.message) {
+              $scope.tweetlist.push(this.message);
+              $scope.message = '';
+              $scope.searchText = '';
+            }
+          };
+
+
+          $scope.delete = function(value) {
+            $scope.tweetlist.pop(value);
+          };
+
+          $scope.suggestion = function(value) {
+            var currentName = value.split("@");
+            if (currentName.length > 1) {
+              $scope.searchText = (currentName[currentName.length - 1]);
+            }
+          };
+
+          $scope.appendName = function(value, searchText) {
+
+            var currentTypedName = $scope.message.split("@");
+
+            var curentTweet = $scope.message.split("@").pop(currentTypedName[currentTypedName.length - 1]);
+
+            var splittedTweet = $scope.message.split("@");
+
+            splittedTweet[splittedTweet.length - 1] = splittedTweet[splittedTweet.length - 1].replace(curentTweet, '' + value);
+
+
+            $scope.message = splittedTweet.join("@");
+
+          };
+
+          $scope.userList = ['ashwin', 'balaji', 'jadega', 'kapil', 'dhoni', 'raina', 'sidhu', 'vikram', 'piyush', 'sharma'];
+
+        }]);
+
+    </script>
+
+    <!--UI-->
+    <div>
+
+
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2 class="md-flex">Tweet demo</h2>
+        </div>
+      </md-toolbar>
+      <md-content md-content flex layout-padding>
+        <form ng-submit="submit()" ng-controller="taggingController">
+
+          <div>Available users: {{userList}}</div>
+
+          <br/>
+
+          <md-input-container class="md-block">
+            <textarea ng-model="message" name="message" ng-change="suggestion(message)" rows="5" cols="40" md-maxlength="140"></textarea>
+            <br>
+          </md-input-container>
+
+          <md-button type="submit" class="md-raised md-primary">Tweet</md-button>
+
+
+
+
+          <br/>
+
+          <md-content ng-if=searchText>
+            <md-list flex="25">
+              <md-list-item class="md-3-line" ng-repeat="user in userList|filter: searchText" ng-click="appendName(user, searchText)">
+
+                <div class="md-list-item-text" layout="column">
+                  <h3 ng-click="appendName(user, searchText)">{{user}}</h3>
+
+                </div>
+              </md-list-item>
+            </md-list>
+          </md-content>
+
+          <br>
+
+          <br>
+
+          <md-card flex="75">
+            <md-card-title ng-repeat="tweet in tweetlist">
+              <md-card-title-text>
+                <span class="md-headline">{{tweet}}</span>
+              </md-card-title-text>
+              <md-card-actions layout="row" layout-align="end">
+                <md-button class="md-raised md-warn" ng-click="delete(tweet)">Delete</md-button>
+              </md-card-actions>
+          </md-card>
+        </form>
+      </md-content>
+    </div>
+  </body>
+
+</html>
